@@ -56,10 +56,10 @@ To ensure deep retention and create proof of work:
 3. Capture, inspect, and decode real connection handshakes and terminations on live interfaces.
 
 #### Hands-On Labs & Practice
-- [ ] **Lab 1.1: Live Packet Interception**
+- [x] **Lab 1.1: Live Packet Interception**
   - Run `tcpdump -nnvv -i any port 80 or port 443 -c 20` while making a curl request to `curl -v http://example.com`.
   - Save the traffic directly to a pcap file: `tcpdump -w day1_handshake.pcap port 80`.
-- [ ] **Lab 1.2: Frame Dissection**
+- [x] **Lab 1.2: Frame Dissection**
   - Open `day1_handshake.pcap` in Wireshark or via `tshark -r day1_handshake.pcap -V`.
   - Locate the relative vs. absolute sequence numbers in the SYN, SYN-ACK, and ACK frames.
 - [ ] **Lab 1.3: Triggering an RST (Connection Reset)**

@@ -1,0 +1,18 @@
+# Example 1: curl localhost:80 and curl localhost:443
+
+ ~  sudo tcpdump -nnvv -i any port 80 or port 443 -c 20       ok | 06:13:35 PM
+
+tcpdump: data link type LINUX_SLL2
+tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
+18:14:44.697583 lo    In  IP (tos 0x0, ttl 64, id 20357, offset 0, flags [DF], proto TCP (6), length 60)
+    127.0.0.1.47032 > 127.0.0.1.443: Flags [S], cksum 0xfe30 (incorrect -> 0x9b0f), seq 1158238569, win 65495, options [mss 65495,sackOK,TS val 848114303 ecr 0,nop,wscale 7], length 0
+18:14:44.697592 lo    In  IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto TCP (6), length 40)
+    127.0.0.1.443 > 127.0.0.1.47032: Flags [R.], cksum 0x61e7 (correct), seq 0, ack 1158238570, win 0, length 0
+18:14:50.473729 lo    In  IP (tos 0x0, ttl 64, id 51883, offset 0, flags [DF], proto TCP (6), length 60)
+    127.0.0.1.43330 > 127.0.0.1.80: Flags [S], cksum 0xfe30 (incorrect -> 0xd288), seq 2568339252, win 65495, options [mss 65495,sackOK,TS val 848120079 ecr 0,nop,wscale 7], length 0
+18:14:50.473736 lo    In  IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto TCP (6), length 40)
+    127.0.0.1.80 > 127.0.0.1.43330: Flags [R.], cksum 0xaff0 (correct), seq 0, ack 2568339253, win 0, length 0
+^C
+4 packets captured
+8 packets received by filter
+0 packets dropped by kernel
