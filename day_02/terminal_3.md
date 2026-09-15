@@ -20,7 +20,11 @@ curl -Iv --tlsv1.3 https://www.cloudflare.com
 2. Questions I had after seeing this and reading the explanation
 
 ```text
-why are there so many TLS(IN) and TLS(OUT) for handshake when supposedly it's very much optimized, and how did you infer it's encrypted after Server hello, what's the number inside parentheses (22), (1), what's Finished, what does *, >, <, and no prefix mean ?
+why are there so many TLS(IN) and TLS(OUT) for handshake when supposedly it's very much optimized
+how do we infer it's encrypted after Server hello
+what do the numbers inside parentheses (22), (1) mean
+what does Finished mean
+what do *, >, <, and no prefix mean ?
 ```
 
 3. TLS handshake (TLSv1.3) achieves 1-RTT (Round Trip Time)
