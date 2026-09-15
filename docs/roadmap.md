@@ -99,7 +99,7 @@ To ensure deep retention and create proof of work:
 
 #### Hands-On Labs & Practice
 
-- [ ] **Lab 2.1: Berkeley Socket Mapping with `ss`**
+- [x] **Lab 2.1: Berkeley Socket Mapping with `ss`**
     - Spin up a background listener: `nc -l -p 8080 &`.
     - Inspect socket states using `ss -tulpn`. Note the Recv-Q and Send-Q semantics for listening vs. connected sockets.
     - Connect a client: `nc 127.0.0.1 8080`. Observe the state change from `LISTEN` to `ESTAB`.
