@@ -106,7 +106,7 @@ To ensure deep retention and create proof of work:
 - [x] **Lab 2.2: Hierarchical DNS Walk**
     - Run `dig +trace www.microsoft.com`.
     - Trace the recursive query through the Root Servers (`.`), TLD Name Servers (`.com`), and authoritative DNS servers. Inspect the TTL and DNS record types (A, CNAME, NS).
-- [ ] **Lab 2.3: TLS 1.3 Handshake Sniffing**
+- [x] **Lab 2.3: TLS 1.3 Handshake Sniffing**
     - Run `curl -Iv --tlsv1.3 https://www.cloudflare.com`.
     - Identify where the asymmetric key exchange (ECDHE) happens, when session keys are derived, and where application data starts showing up as encrypted TLS payloads (`Application Data Protocol: http/2`).
 
