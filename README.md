@@ -12,6 +12,7 @@ a personal playground for breaking down linux, networking and operating system i
 ## Notes Pages
 
 1. [Day 1 - Networks, TCP, Wireshark](day_01/day_01_notes.md)
+1. [Day 2 - Sockets, DNS, TLS](day_02/day_02_notes.md)
 
 ## Environment
 

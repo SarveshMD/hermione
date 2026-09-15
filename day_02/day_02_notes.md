@@ -53,3 +53,48 @@ In standard connected sockets, Recv-Q and Send-Q measure byte buffers:
 ### Lab 2.2: Hierarchical DNS Walk - [terminal_2.md](terminal_2.md)
 
 ### Lab 2.3: TLS 1.3 Handshake Sniffing - [terminal_3.md](terminal_3.md)
+
+## Socket State Machine Diagram
+
+```text
+                Server Socket Lifecycle (Passive Close)
+
+                    +-----------------------+
+                    |        LISTEN         |  <-- socket(), bind(), listen()
+                    +-----------------------+
+                                |
+                   rcv SYN, send SYN-ACK
+                                |
+                                v
+                    +-----------------------+
+                    |       SYN_RCVD        |  <-- In SYN Queue
+                    +-----------------------+
+                                |
+                             rcv ACK
+                                |
+                                v
+                    +-----------------------+
+                    |      ESTABLISHED      |  <-- In Accept Queue -> accept()
+                    +-----------------------+
+                                |
+                     rcv FIN, send ACK
+                                |
+                                v
+                    +-----------------------+
+                    |      CLOSE_WAIT       |  <-- Peer closed; app must close()
+                    +-----------------------+
+                                |
+                    App calls close(), send FIN
+                                |
+                                v
+                    +-----------------------+
+                    |       LAST_ACK        |  <-- Waiting for final ACK
+                    +-----------------------+
+                                |
+                             rcv ACK
+                                |
+                                v
+                    +-----------------------+
+                    |        CLOSED         |  <-- Kernel frees socket memory
+                    +-----------------------+
+```
