@@ -48,4 +48,6 @@ In standard connected sockets, Recv-Q and Send-Q measure byte buffers:
 
 ## Experiments
 
-### Lab 2.1: Berkeley Socket Mapping with `ss`
+### Lab 2.1: Berkeley Socket Mapping with `ss` - [terminal_1.md](terminal_1.md)
+
+### Lab 2.2: Hierarchical DNS Walk - [terminal_2.md](terminal_2.md)

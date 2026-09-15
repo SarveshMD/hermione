@@ -103,7 +103,7 @@ To ensure deep retention and create proof of work:
     - Spin up a background listener: `nc -l -p 8080 &`.
     - Inspect socket states using `ss -tulpn`. Note the Recv-Q and Send-Q semantics for listening vs. connected sockets.
     - Connect a client: `nc 127.0.0.1 8080`. Observe the state change from `LISTEN` to `ESTAB`.
-- [ ] **Lab 2.2: Hierarchical DNS Walk**
+- [x] **Lab 2.2: Hierarchical DNS Walk**
     - Run `dig +trace www.microsoft.com`.
     - Trace the recursive query through the Root Servers (`.`), TLD Name Servers (`.com`), and authoritative DNS servers. Inspect the TTL and DNS record types (A, CNAME, NS).
 - [ ] **Lab 2.3: TLS 1.3 Handshake Sniffing**
