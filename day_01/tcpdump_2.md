@@ -1,8 +1,12 @@
-# Exercise 2: curl http://example.com
+# Exercise 2:
 
- ~  sudo !!            1 err | 06:38:02 PM
+```bash
+sudo !!
 sudo tcpdump -nnvv -i any port 80
-[sudo] password for sarvesh:
+curl http://example.com
+```
+
+```text
 tcpdump: data link type LINUX_SLL2
 tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot length 262144 bytes
 
@@ -56,3 +60,4 @@ tcpdump: listening on any, link-type LINUX_SLL2 (Linux cooked v2), snapshot leng
 12 packets captured
 24 packets received by filter
 0 packets dropped by kernel
+```
