@@ -52,6 +52,8 @@ Notes:
 
 ![Wireshark Screenshot of day1_handshake.pcap](image-2.png)
 
+> thoughts, not notes
+
 I think I understand, for the most part.
 I get it until the packet 5 and 6, i don't get why there's two requests with [ACK] and [PSH, ACK] separately, both acknowledging the GET request and having a ack of 76 (seq was 1, payload length was 75).
 OH WELL, the PSH,ACK was sent along with the response headers. i get it now, it still says its expecting 76 next.
