@@ -41,6 +41,8 @@
 
     ![straceing a process and tracing what it does when signals like SIGINT, SIGKILL are sent](image-2.png)
 
+- `SIGKILL` doesn't get recognized in the `strace` because `SIGKILL` cannot be handled or caught by programs. The kernel terminates the process directly.
+
 ## Gemini Explanations
 
 ### The Two Worlds: User Space vs. Kernel Space

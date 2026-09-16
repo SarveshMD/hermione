@@ -7,7 +7,7 @@ strace -e trace=network curl -s http://example.com > /dev/null
 ```
 
 2. Notes
-    - first `socket` and `connect` commands tried to connect to the DNS server, `nscd` - Name Service Cache Daemon, the local DNS caching service, and failed because it wasn't running
+    - first `socket` and `connect` commands tried to connect to `nscd` - Name Service Cache Daemon, the local DNS caching service, and failed because it wasn't running
     - fall back to standard DNS resolution via UDP (`SOCK_DGRAM`), and `curl` uses some `socketpair`s for running asynchronous DNS resolvers internally, to speed things up
     - once DNS resolution was complete, the socket for the connection to `example.com` was opened and we got a fd of 5.
     - Some `setsockopt` options for the socket
