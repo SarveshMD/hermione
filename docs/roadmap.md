@@ -159,7 +159,7 @@ To ensure deep retention and create proof of work:
 
 #### Optional Boss Fight (Stretch Goal)
 
-- Attach `strace` to a running background process using the `-p <PID>` flag with timestamp tracking (`-tt`) and trace what it does when sent signals like `SIGTERM` and `SIGKILL`.
+- [x] Attach `strace` to a running background process using the `-p <PID>` flag with timestamp tracking (`-tt`) and trace what it does when sent signals like `SIGTERM` and `SIGKILL`.
 
 ---
 

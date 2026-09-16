@@ -35,6 +35,12 @@
     - `strace -p <pid>` attaches to the live hung process
     - It prints everything right upto the blocking `syscall`. Might be a `connect()` call waiting indefinitely without a timeout.
 
+### Optional final goal
+
+- Attach `strace` to a running background process using the `-p <PID>` flag with timestamp tracking (`-tt`) and trace what it does when sent signals like `SIGTERM` and `SIGKILL`.
+
+    ![straceing a process and tracing what it does when signals like SIGINT, SIGKILL are sent](image-2.png)
+
 ## Gemini Explanations
 
 ### The Two Worlds: User Space vs. Kernel Space
