@@ -140,10 +140,10 @@ To ensure deep retention and create proof of work:
 
 #### Hands-On Labs & Practice
 
-- [ ] **Lab 3.1: Reverse-Engineering Common Binaries with `strace`**
+- [x] **Lab 3.1: Reverse-Engineering Common Binaries with `strace`**
     - Run `strace -c ls /` to get a statistical profile of all system calls invoked.
     - Run `strace -e trace=open,openat,read,write cat /etc/hosts` to see every filesystem boundary crossed.
-- [ ] **Lab 3.2: Watching Network Syscalls Live**
+- [x] **Lab 3.2: Watching Network Syscalls Live**
     - Run `strace -e trace=network curl -s http://example.com > /dev/null`.
     - Document the exact sequence: `socket()` -> `connect()` -> `sendto()`/`write()` -> `recvfrom()`/`read()` -> `close()`.
 - [ ] **Lab 3.3: Inspecting File Descriptors via `/proc` and `lsof`**
