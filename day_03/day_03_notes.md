@@ -1,10 +1,39 @@
-# Notes - Day 2
+# Notes - Day 3
 
 ## Experiments
 
 - Lab 3.1: Understanding and Observing syscalls using `strace` - [terminal_1.md](terminal_1.md)
-
+    - Running `strace` on `ls`, `cat`
 - Lab 3.2: Watching Network Syscalls Live - [terminal_2.md](terminal_2.md)
+    - Running `strace` on `curl` and capturing network syscalls
+- Lab 3.3: Inspecting File Descriptors via `/proc` and `lsof` - [terminal_3.md](terminal_3.md)
+    - Messing around with `/proc` and `fd` of processes
+
+## More Notes
+
+### Recovering a deleted file trick
+
+- If a file is open in a program or process, even if it's deleted accidentally, it can be recovered using the fd of the program that maps to the file
+- What I wrote above might not make sense, so here's the demo:
+
+    ![File recovery demo](image-1.png)
+
+- `file_recovery.py` only opens the file and waits for an input
+- We manually delete the `.log` file using `rm`, and the fd of the `python3` process says it's deleted, but the contents themselves weren't wiped from the drive since our python program still has it open.
+- We recover that `.log` file using `python3` process's fd that points to the `.log` file.
+- A simple `cp` works, and the file is recovered
+
+### 3 Real Scenarios where `strace` could help debug
+
+1. A program silently skips the custom config file and falls back to defaults / hardcoded config file
+    - Running `strace` on the program might reveal the exact `syscall` which failed, `openat(path)` where the custom config file was supposed to exist, but the kernel couldn't get to it and says file doesn't exist.
+    - We can fix the config file path, file name, or whatever went down earlier.
+2. A program crashes with Access Denied message on start
+    - Error message just says 'Access Denied', we don't know which file our program was denied access to.
+    - Running `strace` on this program, again, might reveal exactly which `syscall` failed, and therefore we can fix the permissions on that specific file using `chmod` or `chown`
+3. A process hangs without explanation and refuses to terminate
+    - `strace -p <pid>` attaches to the live hung process
+    - It prints everything right upto the blocking `syscall`. Might be a `connect()` call waiting indefinitely without a timeout.
 
 ## Gemini Explanations
 

@@ -146,7 +146,7 @@ To ensure deep retention and create proof of work:
 - [x] **Lab 3.2: Watching Network Syscalls Live**
     - Run `strace -e trace=network curl -s http://example.com > /dev/null`.
     - Document the exact sequence: `socket()` -> `connect()` -> `sendto()`/`write()` -> `recvfrom()`/`read()` -> `close()`.
-- [ ] **Lab 3.3: Inspecting File Descriptors via `/proc` and `lsof`**
+- [x] **Lab 3.3: Inspecting File Descriptors via `/proc` and `lsof`**
     - Launch a python or bash process that sleeps: `sleep 1000 &` or open an interactive interpreter.
     - Navigate to `/proc/<PID>/fd/`. Inspect the symlinks (`0`, `1`, `2`).
     - Run `lsof -p <PID>` to see every shared library (`.so`) and pipe mapped to the process.
