@@ -1,4 +1,22 @@
-# Notes - Day 3
+# Notes - Day 4
+
+## Experiments
+
+- Lab 4.1: Life cycle of a process - Hands-On with C programs - [terminal_1.md](terminal_1.md)
+- Lab 4.2: Understanding Threads and some of the things in `/proc/<pid>/` - [terminal_2.md](terminal_2.md)
+- Lab 4.3: Signals and Custom Signal handlers - C program - [terminal_3.md](terminal_3.md)
+
+## My Notes
+
+1. Process Internals
+    - To identify and clear a zombie process
+        - If we don't know it's PID, find it using `ps -eo pid,ppid,stat,cmd | grep ' Z'`
+        - Either make the parent call `wait()`, or kill the parent so that the zombie is adopted by `systemd` (PID 1) and instantly called `wait()` on
+    - Difference between a process and a thread from the Linux kernel's perspective
+        - A process is created when `clone()` is called without the `CLONE_THREAD` flag resource sharing flags.
+        - The child gets its own TGID, independent file descriptor table, etc,.
+        - A thread inside the same process is created when `clone()` is called with the `CLONE_THREAD` flag and resource sharing flags so that the caller and the clone share virtual memory, file system and files and the clone gets a new PID.
+        - `CLONE_THREAD` is the specific flag that tells the kernel that the cloned thread and the current process are going to share the same `TGID` (Thread Group ID) while giving the clone a different PID (TID).
 
 ## Gemini Explanations
 
