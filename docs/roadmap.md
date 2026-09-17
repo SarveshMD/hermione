@@ -186,7 +186,7 @@ To ensure deep retention and create proof of work:
 - [x] **Lab 4.2: Investigating `/proc/[pid]/` Telemetry**
     - Pick an active process. Read `/proc/<pid>/status`, `/proc/<pid>/cmdline`, `/proc/<pid>/environ`, and `/proc/<pid>/limits`.
     - Check thread count: `ls /proc/<pid>/task/`. Compare process ID (PID) vs Thread Group ID (TGID).
-- [ ] **Lab 4.3: Signal Trapping & Behavior**
+- [x] **Lab 4.3: Signal Trapping & Behavior**
     - Create a bash script that traps `SIGINT` (Ctrl+C) and `SIGTERM`, printing custom refusal messages.
     - Send signals using `kill -15 <pid>` and `kill -9 <pid>`. Verify that `SIGKILL` bypasses the user-space trap entirely and is executed immediately by the kernel.
 
