@@ -180,8 +180,8 @@ To ensure deep retention and create proof of work:
 
 #### Hands-On Labs & Practice
 
-- [ ] **Lab 4.1: The Birth and Death of a Process**
-    - Write a one-liner or simple script that forks a child and exits the parent immediately without `wait()`, creating a temporary Zombie (`Z`) process.
+- [x] **Lab 4.1: The Birth and Death of a Process**
+    - Write a one-liner or simple script that forks a child and exits the child immediately, and parent runs without calling `wait()`, creating a temporary Zombie (`Z`) process.
     - Inspect it using `ps aux | grep 'Z'`. Verify what PID becomes the adopted parent (`init` / `systemd` PID 1).
 - [ ] **Lab 4.2: Investigating `/proc/[pid]/` Telemetry**
     - Pick an active process. Read `/proc/<pid>/status`, `/proc/<pid>/cmdline`, `/proc/<pid>/environ`, and `/proc/<pid>/limits`.
