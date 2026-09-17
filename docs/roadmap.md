@@ -199,7 +199,7 @@ To ensure deep retention and create proof of work:
 
 #### Optional Boss Fight (Stretch Goal)
 
-- Inspect CPU affinity and scheduling policies with `chrt` and `taskset`. Pin a CPU-intensive command to a single core (`taskset -c 0 stress ...`) and inspect per-core CPU utilization with `mpstat` or `htop`.
+- [x] Inspect CPU affinity and scheduling policies with `chrt` and `taskset`. Pin a CPU-intensive command to a single core (`taskset -c 0 stress ...`) and inspect per-core CPU utilization with `mpstat` or `htop`.
 
 ---
 
