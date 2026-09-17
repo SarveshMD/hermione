@@ -28,14 +28,14 @@ Child exiting... pid: 0, getpid(): 23747, getppid(): 23746
     - We can see that `ps aux | grep 'zombie_lab'` shows us the pid `23747`, the child `zombie_lab` process, is in `Z+` state, confirming that the child is indeed a zombie
     - Once the parent dies, the child is adopted by `systemd`, pid 1, and it calls `wait()` for the child, taking it out of the zombies list.
 
-    ![Zombie Lab Demo](image.png)
+    ![Zombie Lab Demo](images/image.png)
 
 4. Another (better) demonstration
     - This program does almost the same thing, but instead of just sleeping for 30 seconds, it sleeps for 15 seconds, calls `wait()`, and sleeps for another 15 seconds.
     - Here, it's clear that when the parent hasn't called wait, the child is a zombie.
     - Once the parent calls `wait()`, the child is no longer a zombie.
 
-    ![perfect](image-1.png)
+    ![perfect](images/image-1.png)
 
 5. Output of better demonstration
 
