@@ -10,6 +10,23 @@
 
 ## My Notes
 
+1. Out-Of-Memory Killer
+    - When the system runs out of memory, OOM Killer picks processes to kill with the highest OOM scores (`/proc/<pid>/oom_score`), so as to clear up memory and prevent kernel panic
+    - Processes with uid 0 (`root`) get a reduction in thier `oom_score`
+    - PID 1 (`init`/`systemd`) process is immune to avoid taking down the whole operating system
+    - OOM Scores range from 0 and 1000. Highest score gets killed first.
+    - The score depends directly on
+        - Process Physical RAM (RSS - Resident Set Size) and Swap Used
+    - `/proc/<pid>/oom_score_adj` holds adjustments for processes that need it. It ranges from `-1000` and `1000`
+        - `0` is the default value. No adjustments
+        - `-1000` -> Process is immune to OOM Killer, whatever the oom_score is.
+        - `1000` -> Scapegoat -> kill this guy first in case of OOM, even if his oom_score is less.
+    - Score Adjustment is applied in this manner:
+
+        `adjusted_score = clamp(oom_score + oom_score_adj, 0, 1000)`
+
+    - For some reason, when I look, almost all processes have an `oom_score` of around `666` to `670`
+
 ## Gemini Explanations
 
 Every running program lives inside an illusion. A process genuinely believes it owns a vast, flat, contiguous ocean of bytes starting at address zero, completely isolated from any other program running on the system.
