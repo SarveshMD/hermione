@@ -226,7 +226,7 @@ To ensure deep retention and create proof of work:
     - Write a short note in plain English clarifying the difference between `free` and `available`.
 - [x] **Lab 5.2: Tracking Page Faults**
     - Run `usr/bin/time -v <command>` (e.g. `/usr/bin/time -v ls -laR /usr`) to observe the output for **Major (requiring I/O) page faults** vs **Minor (reclaiming a frame) page faults**.
-- [ ] **Lab 5.3: The Linux Page Cache in Action**
+- [x] **Lab 5.3: The Linux Page Cache in Action**
     - Generate a 500MB test file: `dd if=/dev/urandom of=testfile bs=1M count=500`.
     - Clear the system page cache: `sync; echo 3 | sudo tee /proc/sys/vm/drop_caches`.
     - Time the first read: `/usr/bin/time -v cat testfile > /dev/null`.

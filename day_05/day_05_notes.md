@@ -6,6 +6,8 @@
 
 - Lab 5.2: Tracking Page Faults - [terminal_2.md](terminal_2.md)
 
+- Lab 5.3: Linux Page Cache in Action - [terminal_3.md](terminal_3.md)
+
 ## My Notes
 
 ## Gemini Explanations
