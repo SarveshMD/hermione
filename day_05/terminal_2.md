@@ -14,7 +14,7 @@
 
 2. Outputs of `/usr/bin/time -v echo "..." > /dev/null`
     - `echo` not in page cache. triggers major page faults. then loaded into page cache
-    - ![Major Page faults](images/image-3.png)
+      ![Major Page faults](images/image-3.png)
 
     - `echo` already in page cache. no major page faults.
-    - ![Zero Major Page faults](images/image-4.png)
+      ![Zero Major Page faults](images/image-4.png)

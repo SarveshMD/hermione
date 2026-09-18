@@ -242,7 +242,7 @@ To ensure deep retention and create proof of work:
 
 #### Optional Boss Fight (Stretch Goal)
 
-- Examine a process's memory layout with `pmap -x <pid>` or inspect `/proc/<pid>/maps` to identify text, data, BSS, heap, memory-mapped regions (`mmap`), and stack segments.
+- [x] Examine a process's memory layout with `pmap -x <pid>` or inspect `/proc/<pid>/maps` to identify text, data, BSS, heap, memory-mapped regions (`mmap`), and stack segments.
 
 ---
 

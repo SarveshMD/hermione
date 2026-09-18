@@ -15,6 +15,7 @@ a personal playground for breaking down linux, networking and operating system i
 2. [Day 2 - Sockets, DNS, TLS](day_02/day_02_notes.md)
 3. [Day 3 - System Calls, File Descriptors, `strace`, `/proc/<pid>/fd`](day_03/day_03_notes.md)
 4. [Day 4 - Process Internals, Threads, Signals, Zombies](day_04/day_04_notes.md)
+5. [Day 5 - Virtual Memory Pages, Page Faults, Page Cache](day_05/day_05_notes.md)
 
 ## Environment
 

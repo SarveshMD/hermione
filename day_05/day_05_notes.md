@@ -25,7 +25,7 @@
 
         `adjusted_score = clamp(oom_score + oom_score_adj, 0, 1000)`
 
-    - For some reason, when I look, almost all processes have an `oom_score` of around `666` to `670`
+    - For some reason, when I look, almost all processes have an `oom_score` of around `666` to `670`. Gemini says it's a direct consequence of running inside WSL2.
 
 ## Gemini Explanations
 
