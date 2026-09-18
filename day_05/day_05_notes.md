@@ -4,6 +4,8 @@
 
 - Lab 5.1: Decoding Memory Telemetry - [terminal_1.md](terminal_1.md)
 
+- Lab 5.2: Tracking Page Faults - [terminal_2.md](terminal_2.md)
+
 ## My Notes
 
 ## Gemini Explanations

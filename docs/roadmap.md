@@ -224,7 +224,7 @@ To ensure deep retention and create proof of work:
     - Run `free -h` and `vmstat 1 5`.
     - Read `/proc/meminfo` directly. Identify `MemAvailable`, `Buffers`, `Cached`, `Dirty`, and `SwapTotal`.
     - Write a short note in plain English clarifying the difference between `free` and `available`.
-- [ ] **Lab 5.2: Tracking Page Faults**
+- [x] **Lab 5.2: Tracking Page Faults**
     - Run `usr/bin/time -v <command>` (e.g. `/usr/bin/time -v ls -laR /usr`) to observe the output for **Major (requiring I/O) page faults** vs **Minor (reclaiming a frame) page faults**.
 - [ ] **Lab 5.3: The Linux Page Cache in Action**
     - Generate a 500MB test file: `dd if=/dev/urandom of=testfile bs=1M count=500`.
