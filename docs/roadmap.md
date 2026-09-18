@@ -220,7 +220,7 @@ To ensure deep retention and create proof of work:
 
 #### Hands-On Labs & Practice
 
-- [ ] **Lab 5.1: Decoding Memory Telemetry**
+- [x] **Lab 5.1: Decoding Memory Telemetry**
     - Run `free -h` and `vmstat 1 5`.
     - Read `/proc/meminfo` directly. Identify `MemAvailable`, `Buffers`, `Cached`, `Dirty`, and `SwapTotal`.
     - Write a short note in plain English clarifying the difference between `free` and `available`.
