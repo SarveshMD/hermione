@@ -263,7 +263,7 @@ To ensure deep retention and create proof of work:
 
 #### Hands-On Labs & Practice
 
-- [ ] **Lab 6.1: Namespace Isolation with `unshare`**
+- [x] **Lab 6.1: Namespace Isolation with `unshare`**
     - Create an isolated PID and hostname namespace:
         ```bash
         sudo unshare --fork --pid --net --mount-proc bash
