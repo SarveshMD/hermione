@@ -270,7 +270,7 @@ To ensure deep retention and create proof of work:
         ```
     - Run `ps aux` inside this new shell. Notice how your bash shell is now **PID 1**.
     - Change the hostname inside using `hostname isolab`. Exit and confirm your host's hostname remained untouched.
-- [ ] **Lab 6.2: Virtual Network Wiring (The Core of Docker/Kubernetes Networking)**
+- [x] **Lab 6.2: Virtual Network Wiring (The Core of Docker/Kubernetes Networking)**
     - Create two distinct network namespaces:
         ```bash
         sudo ip netns add red

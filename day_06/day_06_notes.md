@@ -4,6 +4,8 @@
 
 - Lab 6.1: Namespace Isolation with `unshare` - [terminal_1.md](terminal_1.md)
 
+- Lab 6.2: Virtual Network Wiring - [terminal_2.md](terminal_2.md)
+
 ## My Notes
 
 ## Gemini Explanations
