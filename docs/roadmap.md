@@ -296,7 +296,7 @@ To ensure deep retention and create proof of work:
         ```bash
         sudo ip netns exec red ping -c 3 10.0.0.2
         ```
-- [ ] **Lab 6.3: Enforcing Memory Limits via Cgroups v2**
+- [x] **Lab 6.3: Enforcing Memory Limits via Cgroups v2**
     - Create a test cgroup: `sudo mkdir /sys/fs/cgroup/testgroup`.
     - Set a hard memory limit of 50MB: `echo "50M" | sudo tee /sys/fs/cgroup/testgroup/memory.max`.
     - Assign a process to it and monitor behavior when it hits the ceiling.

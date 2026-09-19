@@ -6,7 +6,27 @@
 
 - Lab 6.2: Virtual Network Wiring - [terminal_2.md](terminal_2.md)
 
+- Lab 6.3: Enforcing Memory Limits via Cgroups v2 - [terminal_3.md](terminal_3.md)
+
 ## My Notes
+
+### How do Docker containers talk to the outside internet via a bridge interface (`docker0`) and NAT (`iptables` masquerade) ?
+
+- Docker creates a virtual bridge (`docker0`) that acts like a physical virtual switch on a private subnet (like `10.0.0.1/16`).
+
+- Every container's network namespace is plugged into this bridge using one a `veth` pair, with this bridge as the container's default gateway.
+
+- When a container sends a packet to an external IP, the container's network namespace routes it out through it's local interface `eth0`, sends it down the `veth` wire, and it hits the `docker0` virtual bridge. The host kernel's IP forwarding looks at the packet and forwards it to the physical `eth0`/`wlan0` network interface of the host.
+
+- Since the container network namespaces have internal private IPs, the host uses `iptables`'s `MASQUERADE` rule. Before the packet leaves the host's physical network interface, the host rewrites the container's private IP address with the host's routable IP and an unique ephemeral port on the host, tracks the connection, and translates the incoming replies to the same port back to the container down the same route.
+
+- Some more port mapping notes (Gemini Screenshots):
+
+    ![alt text](images/image-13.png)
+
+    ![alt text](images/image-14.png)
+
+    ![alt text](images/image-15.png)
 
 ## Gemini Explanations
 
@@ -14,9 +34,9 @@ Containers are not virtual machines; there is no hypervisor or guest kernel runn
 
 - Namespaces: Control what a process can see (its view of the system).
 
-- Control Groups (cgroups): Control what a process can use (its resource consumption).
+- Control Groups (`cgroups`): Control what a process can use (its resource consumption).
 
-When you pair these two with a filesystem jail (like chroot or pivot_root), you get what the industry packages up and sells as a "container."
+When you pair these two with a filesystem jail (like `chroot` or `pivot_root`), you get what the industry packages up and sells as a "container."
 
 ### The Big Three Prerequisite Concepts
 
@@ -30,15 +50,15 @@ Namespaces wrap a global system resource into an abstraction so processes inside
 
 - NET (Network): Provides an independent network stack: its own loopback interface, IP routing tables, firewall rules, and socket listings. An application bound to port 80 inside this namespace won't collide with port 80 on the host.
 
-- MNT (Mount): Isolates the list of filesystem mount points. Mounting or unmounting a disk/pseudo-filesystem (like /proc) inside doesn't alter the host.
+- MNT (Mount): Isolates the list of filesystem mount points. Mounting or unmounting a disk/pseudo-filesystem (like `/proc`) inside doesn't alter the host.
 
-- UTS (UNIX Timesharing System): Isolates the hostname and domain name. You can name your container web-prod-01 without altering the host's actual hostname.
+- UTS (UNIX Timesharing System): Isolates the hostname and domain name. You can name your container `web-prod-01` without altering the host's actual hostname.
 
 - IPC, USER, CGROUP: Isolate inter-process communication queues, user/group IDs (mapping a non-root host user to UID 0 root inside), and cgroup root view.
 
 #### 2. Virtual Networking: The veth Pair
 
-Because an isolated network namespace starts completely blank (only having a down lo interface), it has no way to talk to anything.
+Because an isolated network namespace starts completely blank (only having a down `lo` interface), it has no way to talk to anything.
 
 To bridge this, Linux provides a veth (Virtual Ethernet) pair. Think of it as a virtual, bidirectional Ethernet patch cord:
 
@@ -46,17 +66,17 @@ To bridge this, Linux provides a veth (Virtual Ethernet) pair. Think of it as a 
 
 - You leave one end pinned to one environment (e.g., host or another namespace) and physically shove the other end into the target namespace.
 
-In Lab 6.2, you wire two namespaces directly together point-to-point. Later, when you want 10 or 50 containers talking to each other and the internet, you plug their host-side veth ends into a Linux software bridge (like docker0), which behaves just like a physical network switch.
+In Lab 6.2, you wire two namespaces directly together point-to-point. Later, when you want 10 or 50 containers talking to each other and the internet, you plug their host-side veth ends into a Linux software bridge (like `docker0`), which behaves just like a physical network switch.
 
 #### 3. Cgroups v2 (Resource Walls)
 
 While namespaces prevent a rogue process from seeing your host's processes or snooping on traffic, they do not prevent that process from consuming 100% of your RAM or CPU and locking up the box.
 
-Control Groups (cgroups) meter and throttle resources:
+Control Groups (`cgroups`) meter and throttle resources:
 
-- cgroups v2 organizes this via a unified hierarchy exposed as a pseudo-filesystem under /sys/fs/cgroup.
+- `cgroups` v2 organizes this via a unified hierarchy exposed as a pseudo-filesystem under `/sys/fs/cgroup`.
 
-- Creating a cgroup is as simple as creating a directory (mkdir /sys/fs/cgroup/testgroup). The kernel automatically populates control files inside that folder.
+- Creating a cgroup is as simple as creating a directory (mkdir `/sys/fs/cgroup/testgroup`). The kernel automatically populates control files inside that folder.
 
 - Writing a number into memory.max sets the ceiling. If processes inside exceed it and cannot free memory via reclaim, the kernel's Out-Of-Memory (OOM) Killer intervenes and terminates the offending process.
 
@@ -110,39 +130,39 @@ However, inside the container’s isolated PID namespace:
 
 Processes get assigned to namespaces through explicit kernel system calls:
 
-1. clone() with flags: When a parent creates a brand new child, it passes flags like CLONE_NEWPID, CLONE_NEWNET, CLONE_NEWNS. The kernel creates fresh namespace instances and places the new child directly inside them.
+1. `clone()` with flags: When a parent creates a brand new child, it passes flags like `CLONE_NEWPID`, `CLONE_NEWNET`, `CLONE_NEWNS`. The kernel creates fresh namespace instances and places the new child directly inside them.
 
-2. unshare(): A currently running process asks the kernel to detach it from its inherited namespaces and drop it into brand new ones. (This is what the CLI command unshare uses under the hood).
+2. `unshare()`: A currently running process asks the kernel to detach it from its inherited namespaces and drop it into brand new ones. (This is what the CLI command unshare uses under the hood).
 
-3. setns(): A process can attach itself to an existing namespace belonging to another running process (this is what docker exec does to drop your shell into an existing container).
+3. `setns()`: A process can attach itself to an existing namespace belonging to another running process (this is what `docker exec` does to drop your shell into an existing container).
 
-#### 4. How do veth pairs work, and what is docker run -p actually doing?
+#### 4. How do `veth` pairs work, and what is `docker run -p` actually doing?
 
-A veth pair works at Layer 2 / Layer 3 (Ethernet/IP), not Layer 4 (ports).
+A `veth` pair works at Layer 2 / Layer 3 (Ethernet/IP), not Layer 4 (ports).
 
-A veth pair behaves like a virtual Ethernet patch cable. It has two ends, each acting as a virtual network interface card (NIC):
+A `veth` pair behaves like a virtual Ethernet patch cable. It has two ends, each acting as a virtual network interface card (NIC):
 
-- End A: sits inside the container namespace (usually renamed eth0).
+- End A: sits inside the container namespace (usually renamed `eth0`).
 
-- End B: sits in the host's root namespace (usually named something like veth1234abc).
+- End B: sits in the host's root namespace (usually named something like `veth1234abc`).
 
 Your lettered breakdown is spot on conceptually:
 
 - Point-to-point (a, c): You can plug End A into Container 1 and End B into Container 2 (or host) for direct communication.
 
-- Virtual switch (d): In Docker or Kubernetes, End B is plugged into a virtual bridge (docker0 or cbr0). Multiple containers have their veth ends plugged into this bridge switch, allowing them to communicate on an internal private subnet (like 172.17.0.0/16).
+- Virtual switch (d): In Docker or Kubernetes, End B is plugged into a virtual bridge (`docker0` or `cbr0`). Multiple containers have their veth ends plugged into this bridge switch, allowing them to communicate on an internal private subnet (like `172.17.0.0/16)`.
 
-##### What does docker run -p hostPort:containerPort actually do?
+##### What does `docker run -p hostPort:containerPort` actually do?
 
-(Note: Docker's syntax is -p <hostPort>:<containerPort>, e.g., -p 8080:80 maps host port 8080 to container port 80).
+(Note: Docker's syntax is `-p <hostPort>:<containerPort>`, e.g., `-p 8080:80` maps host port 8080 to container port 80).
 
-The veth cable merely provides the pipe into the container's private IP (172.17.0.2). It does not bind the host's port by itself.
+The veth cable merely provides the pipe into the container's private IP (`172.17.0.2`). It does not bind the host's port by itself.
 
-When you run -p 8080:80, Docker sets up Network Address Translation (NAT) via firewall rules (using iptables or nftables):
+When you run `-p 8080:80`, Docker sets up Network Address Translation (NAT) via firewall rules (using iptables or nftables):
 
-1. A rule is added: "If a packet arrives on the host targeting port 8080, rewrite the destination IP to 172.17.0.2 and destination port to 80."
+1. A rule is added: "If a packet arrives on the host targeting port 8080, rewrite the destination IP to `172.17.0.2` and destination port to 80."
 
-2. The packet travels across the bridge (docker0), flows down the veth pipe, and arrives at the container's eth0.
+2. The packet travels across the bridge (`docker0`), flows down the veth pipe, and arrives at the container's eth0.
 
 3. The application listening inside the container on port 80 receives the request and replies back through the same veth tunnel.
 
@@ -152,7 +172,7 @@ Namespaces and cgroups do not inherently know about each other. They are complet
 
 The link between them is the process PID itself:
 
-- A cgroup directory (like /sys/fs/cgroup/testgroup) contains a control file named cgroup.procs.
+- A cgroup directory (like `/sys/fs/cgroup/testgroup`) contains a control file named `cgroup.procs`.
 
 - To put a process into a cgroup, you write its host PID into that file:
 
@@ -162,16 +182,16 @@ echo 41209 | sudo tee /sys/fs/cgroup/testgroup/cgroup.procs
 
 - Once you write that PID, the kernel updates that process's internal descriptor so that all resource accounting (memory allocations, CPU cycles, disk I/O) is billed to testgroup.
 
-- Because child processes inherit their parent's cgroup automatically on fork(), any process spawned inside that container gets tracked and bounded under the exact same cgroup.
+- Because child processes inherit their parent's cgroup automatically on `fork()`, any process spawned inside that container gets tracked and bounded under the exact same cgroup.
 
 Container engines like Docker simply coordinate the dance:
 
-1. Create the cgroup directory under /sys/fs/cgroup/....
+1. Create the cgroup directory under `/sys/fs/cgroup/....`
 
-2. Set the resource limits (memory.max, cpu.max).
+2. Set the resource limits (`memory.max`, `cpu.max`).
 
 3. Spawn the container's root process inside new namespaces.
 
-4. Take that process's host PID and write it into the cgroup's cgroup.procs file.
+4. Take that process's host PID and write it into the cgroup's `cgroup.procs` file.
 
 5. Plumb the veth interface into the process's network namespace.
