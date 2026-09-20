@@ -331,7 +331,7 @@ To ensure deep retention and create proof of work:
 
 #### Hands-On Labs & Practice
 
-- [ ] **Lab 7.1: The Mystery of High Load with Low CPU**
+- [x] **Lab 7.1: The Mystery of High Load with Low CPU**
     - Understand the formula for Linux Load Average (R state + D state threads).
     - Simulate an artificial disk bottleneck using heavy sync writes (`dd if=/dev/zero of=hugefile bs=1M count=2000 oflag=dsync`) while checking `iostat -xz 1`, `vmstat 1`, and `top` (watching the `%wa` I/O wait column).
 - [ ] **Lab 7.2: Diagnostic Gauntlet Execution**
