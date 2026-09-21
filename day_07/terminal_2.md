@@ -16,11 +16,11 @@ ps aux --sort=-%cpu | head -10
 ps aux --sort=-%mem | head -10
 ```
 
-![Outputs](image-5.png)
+![Outputs](images/image-5.png)
 
-![iostat -x output](image-6.png)
+![iostat -x output](images/image-6.png)
 
-![ps aux statistics](image-7.png)
+![ps aux statistics](images/image-7.png)
 
 ## 2. Analysis
 

@@ -341,7 +341,7 @@ To ensure deep retention and create proof of work:
         - Memory pressure: `vmstat 1 3` (swapping, SI/SO)
         - I/O load: `iostat -x 1 3`
         - Top consumers: `ps aux --sort=-%cpu | head -10` and `ps aux --sort=-%mem | head -10`
-- [ ] **Lab 7.3: Capstone Postmortem Documentation**
+- [x] **Lab 7.3: Capstone Postmortem Documentation**
     - Select one high-profile real-world incident (e.g., Cloudflare 2019 ReDoS CPU spike, or an AWS Kinesis thread starvation incident).
     - Trace it down to the exact OS primitive: What syscall failed? What queue backed up? Why did the health check report healthy while user requests timed out?
 

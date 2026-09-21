@@ -1,5 +1,88 @@
 # Notes - Day 7
 
+## Experiments
+
+- Lab 7.1: High Load, Low CPU - [terminal_1.md](terminal_1.md)
+
+- Lab 7.2: Diagnostic Tools - [terminal_2.md](terminal_2.md)
+
+## Incident Report - Cloudflare ReDOS Outage (July 2, 2019)
+
+I'm writing out whatever I gathered from reading about this.
+
+### 1. Trigger
+
+- An update to the Web Application Firewall's rule targeting Cross-Site Scripting (XSS) contained a poorly constrained regular expression.
+- The regular expression engine experienced a catastrophic backtracking (*O(2<sup>n</sup>)* time complexity) when evaluating requests
+
+### 2. Failure propagation
+
+- NGINX workers were trapped in user-space executing the regex computation
+- Incoming requests didn't get `accept()` or `read()` calls.
+- Socket backlogs overflowed, and the kernel dropped incoming TCP `SYN` packets and closed connections with `RST`.
+
+### 3. Response to Clients
+
+- Requests to the server timed out and started and the reverse proxies started sending out 502/504 Bad Gateway/Gateway Timeout errors.
+> Note: Reverse Proxy Servers sit in front of our servers, facing the public internet to protect, hide and optimize the server
+
+### 4. Metrics
+
+- `top` / `vmstat`: `%us` spiked to 100% across all cores; `r` (runnable queue) exploded; `b` (blocked) remained 0; `%wa` remained 0%.
+- `ss -lnt`: `Send-Q` on ports 80/443 hit maximum capacity (backlog limit reached).
+- `strace -p <pid>`: 0 syscalls emitted (process trapped in user space).
+
+### 5. Net Impact
+
+- Global HTTP 502 Bad Gateway errors across ~50% of Cloudflare traffic, peaking at ~82%, for approximately 27 minutes.
+- Approximately 10% of all internet traffic briefly froze.
+- Impacted over 1 billion users.
+
+## First Response Steps
+> When a Linux VM or container starts throwing HTTP 502/504 errors.
+> To be executed ON THE SERVER
+
+### 1. Isolate Local App
+
+   - Run `ss -tlpn` to find the listening port and server application's PID
+   - `curl -Iv http://localhost:<app_port>/`
+   - Look for:
+     - Connection Refused: The process died or crashed, or is listening on a different interface.
+     - Returns any HTTP Status (even 500 or 404): The app is alive and parsing HTTP. 502/504 is on the load balancer timeout, proxy configuration or the network path.
+
+### 2. Check Scheduler State and Saturation
+
+   - Run `vmstat 1 3`
+   - If `r` (runnable) is significantly higher than CPU Core count => CPU starvation. CPU is overloaded, causing requests to queue up and time out
+   - If `b` (blocked) > 0, processes are blocked waiting on hardware I/O
+   - High `us`: Bad application logic, heavy compute, ReDoS regex
+   - High `wa`: Disk subsystem bottleneck. CPU is idle because storage cannot keep up
+
+### 3. Check Memory Pressure and Swap
+
+   - Check `available` in `free -m`. If it's near zero, the kernel is running out of physical memory.
+   - `si` / `so` in `vmstat`
+     - Both zero => clean
+     - Either > 0 continuously => Actively reading and writing RAM pages into disk. Latency is thousands of times slower than RAM, causing app execution times to skyrocket => Timeouts => HTTP 502/504 errors
+
+### 4. Check Sockets and Listen Backlogs
+
+   - Check `ss -lnt` & `ss -s`
+   - In `ss -lnt`
+     - Look at the Recv-Q and Send-Q columns of listening app port
+     - Send-Q represents the maximum backlog limit (LISTEN)
+     - Recv-Q represents the number of connections waiting in line to be `accept()`-ed by the application.
+     - If Recv-Q >= Send-Q => Listening queue is full. Application cannot process connections fast enough, and new incoming packets are being silently dropped.
+   - In `ss -s`
+     - Look for high TIME-WAIT and CLOSE-WAIT
+
+### 5. Check Kernel logs for OOM Killer
+
+   - Run `dmesg -T | tail -30`
+     - Look for Out of Memory: Kill Process <PID> ...
+     - If the OOM killer assassinated our worker or background processes, that might be the problem.
+
+
 ## Gemini Explanations
 
 ### 1. The Core Mental Model: Brendan Gregg’s USE Method

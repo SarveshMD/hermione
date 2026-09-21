@@ -8,16 +8,16 @@
 - Current `%wa` (I/O wait): 0.00 in `top` and 0 in `vmstat`
 - `vmstat`'s `b` (blocked processes) column: 0
 
-   ![vmstat output](image.png)
+   ![vmstat output](images/image.png)
 
-   ![top output](image-1.png)
+   ![top output](images/image-1.png)
 
 2. `iostat -xz 1`
 - `%util` (device utilization): 0.80
 - `w_wait` (write latency in ms): 2.33
 - `aqu-sz` (average queue size): 0.01
 
-    ![iostat output](image-2.png)
+    ![iostat output](images/image-2.png)
 
 ## Creating a bottleneck
 
@@ -35,6 +35,6 @@ dd if=/dev/urandom of=hugefile bs=1M count=2000 oflag=dsync
 2. `top`
    - Caught the `D` state (Uninterruptible Sleep) of `dd`
 
-   ![bottleneck situation](image-3.png)
+   ![bottleneck situation](images/image-3.png)
 
-   ![top in bottleneck text](image-4.png)
+   ![top in bottleneck text](images/image-4.png)
