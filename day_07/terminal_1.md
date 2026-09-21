@@ -1,7 +1,7 @@
+# Exercise 7.1 Terminal Outputs
 
 
-Logs before bottleneck
-
+## Stats before bottleneck
 
 1. `vmstat 1` and `top`
 - Current CPU Load Average: 0.03, 0.07, 0.04
@@ -19,8 +19,22 @@ Logs before bottleneck
 
     ![iostat output](image-2.png)
 
-Creating a bottleneck
+## Creating a bottleneck
 
-![bottleneck situation](image-3.png)
+```bash
+dd if=/dev/urandom of=hugefile bs=1M count=2000 oflag=dsync
+```
 
-![top in bottleneck text](image-4.png)
+> **What `oflag=dsync` does**: Normally, writes go straight into the OS RAM (the page cache) and return instantly while the kernel flushes them lazily in the background. dsync forces every single 1 MB block to physically commit to storage hardware before the write syscall returns to user space.
+
+## Stats during the bottleneck
+
+1. `vmstat`
+   - It caught the blocked state (`b` column)
+
+2. `top`
+   - Caught the `D` state (Uninterruptible Sleep) of `dd`
+
+   ![bottleneck situation](image-3.png)
+
+   ![top in bottleneck text](image-4.png)
