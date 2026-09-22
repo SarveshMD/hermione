@@ -6,6 +6,61 @@
 
 - Lab 7.2: Diagnostic Tools - [terminal_2.md](terminal_2.md)
 
+## Final Checklist Answers
+
+### 1. What exact network packets leave my machine when I run `curl https://azure.microsoft.com`?
+
+   1. The URL needs to be resolved into an IP. Kernel checks local DNS cache, and then runs a Recursive Name Resolution and gets the IP (A UDP packet).
+   2. A TCP `SYN` packet is sent to the server. Upon receiving the `SYN-ACK` from the server, the `ACK` is sent and a 3-way TCP handshake is completed.
+   3. A TLS Handshake is initiated (`ClientHello`), cryptographic keys are exchanged, and a secure connection is established.
+   4. `curl` then issues an encrypted `GET /` HTTP request to the server, and the response is streamed out `stdout`.
+
+### 2. What is the difference between a process context switch and a thread context switch?
+
+   > The Translation Lookaside Buffer (TLB) is a type of cache inside the CPU that stores recent mappings or translations between virtual and physical memory.
+
+   1. Threads share the same virtual address space. The CPU's Translation Lookaside Buffer (TLB) does not need to be flushed. So there's less overhead on a thread context switch.
+   2. Processes have completely different virtual address spaces. A process context switch invalidates the entire TLB, resulting in high TLB misses, increasing latency, and walks the RAM page tables for every instruction and data access until the cache catches up again.
+
+### 3. Why does `kill -9` succeed when an application is locked in an infinite loop, but fails when stuck in state `D`?
+
+   1. The kernel refuses to kill a process in state `D` (Uninterruptible Sleep)
+   2. It is because a process enters state D when it awaits an I/O operation - like a disk read/write, communication over network interfaces, etc,.
+   3. Killing a process when it's in an active connection with an I/O device could corrupt the device, so processes aren't killed in `D` state.
+
+### 4. How does an epoll-based web server handle 100,000 concurrent open sockets without crashing the CPU?
+   1. An epoll-based web server handles 100,000 concurrent open sockets without crashing the CPU because it replaces the old O(N) socket scanning with an event-driven model.
+   2. Sockets are registered once inside a kernel-space **Red-Black Tree** via `epoll_ctl()`.
+   3. When packets arrive, hardware interrupts trigger kernel callbacks that place only the sockets that have data to be read by the user-space onto a **Ready List**..
+   4. Calling `epoll_wait()` returns in O(k) time, handing the application only the sockets that actually have data to read.
+   5. This leaves the CPU idle instead of constantly scanning all 100,000 sockets.
+
+### 5. If two Docker containers on the same host cannot communicate, what 3 CLI commands do you run first to pinpoint the exact failure point?
+
+   > These were my first thoughts because I'd worked on namespaces I created locally, but for Docker containers, it should be `docker exec <container_name> ...`
+
+   1. `sudo ip netns exec <container_namespace> ping -c 3 <other-container-ip>`
+      - Try to `ping` the peer container if you know the IP. To find the IP out, use step 2.
+   2. `sudo ip netns exec <container_namespace> ip addr`
+      - List the network interface statuses and links
+      - See if the `eth0` (if connected over the internet) or the veth pair that connecs the container to the virtual switch (like `docker0`) are `UP` or `DOWN`
+      - See if they have a configured IP address to talk to.
+   3. Configure the IP or `veth` pairs to connect them the way they should be. There's no one way to connect two containers, but usually they're connected with a virtual switch like `docker0` in the middle, with a veth pair connecting each container on one end and the virtual switch on the other.
+   4. This way, if there are more containers that need to be in the same virtual network, it's as simple as creating a new veth pair for that container.
+
+   #### The Docker Way
+
+   5. `docker exec <container_name> ip addr`
+      - Look if all container interfaces are `UP`
+      - Look if their IPs are on the same subnet
+      - Ensure they're all connected to the expected Docker bridge network
+   6. `ip link show docker0`
+      - Verify the bridge is active and both `veth` endpoints are plugged in
+   7. `sudo iptables -L FORWARD -n -v`
+      - Gets the forwarding rules, without reverse DNS lookups, and verbose
+      - `ping` or `curl` from one container to another and observe the packet counter `pkts` column on `iptables` command. If we find a rule for `DROP` or `REJECT` increase, we'll have found the problem => The linux firewall is throwing out our packets.
+
+
 ## Incident Report - Cloudflare ReDOS Outage (July 2, 2019)
 
 I'm writing out whatever I gathered from reading about this.
